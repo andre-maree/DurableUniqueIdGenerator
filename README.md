@@ -31,17 +31,17 @@ Authorization: MasterKey
 
 {id} - this is the new value of the counter, this can be rest to 0 or any interger value, including negatives
 
-## DeleteCounterResource
+## DeleteResourceCounter
 
-### api/DeleteCounterResource/{resourceId}
+### api/DeleteResourceCounter/{resourceId}
 
 Authorization: MasterKey
 
 {resourceId} - the string that identifies the resource
 
-## ListCounterResources
+## ListResourceCounters
 
-### api/ListCounterResources
+### api/ListResourceCounters
 
 Authorization: MasterKey and GetIdsKey
 
