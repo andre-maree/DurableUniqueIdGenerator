@@ -44,7 +44,7 @@ Authorization: MasterKey
 
 ### api/ListResourceCounters
 
-Authorization: MasterKey and GetIdsKey
+Authorization: MasterKey and GenerateIdsKey
 
 Example response:
 ```json
@@ -78,3 +78,5 @@ In the local.settings.json file:
     "GenerateIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
     
 The key must be passed in the auth header as a bearer token.
+
+It is recommended to also use function keys and the app system master key to add further security, and also to implement token based security using Azure AD.
