@@ -1,0 +1,9 @@
+{
+    "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "MasterKey": "ZQ1iwmLGiVGchDpu7koAvGV9n5jNxsKA", // used to authorize -> set the counter to any value
+    "GetIdsKey": "GzZEjv79DWcK2gVkTp3RKRoSDKJCdnwn" // used to authorize -> get new ids
+  }
+}
