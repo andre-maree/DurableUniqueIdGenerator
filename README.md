@@ -5,6 +5,8 @@ Generate new numeric ids in sequence for any resource id string. Integer ids wil
 
 api/GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}
 
+Authorization: GetIdsKey
+
 {resourceId} - any string that identifies the resource
 
 {count} - how many ids to generate
@@ -24,16 +26,25 @@ For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, 
 
 api/MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}
 
+Authorization: MasterKey
+
 {id} - this is the new value of the counter, this can be rest to 0 or any interger value, including negatives
 
 ## DeleteCounterResource
 
 api/DeleteCounterResource/{resourceId}
 
+Authorization: MasterKey
+
 {resourceId} - the string that identifies the resource
 
 ## ListCounterResources
-## api/ListCounterResources, and the response will look like this:
+
+api/ListCounterResources
+
+Authorization: MasterKey and GetIdsKey
+
+Example response:
 
 [
    {
@@ -54,11 +65,10 @@ api/DeleteCounterResource/{resourceId}
    }
 ]
 
-Authorization:
-        DeleteCounterResource: [GET,POST] http://localhost:7231/api/DeleteCounterResource/{resourceId}
+The "key" is the resource id and "state" is value of the current count of the resource.
 
-        GenerateIds: [GET,POST] http://localhost:7231/api/GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}
+## Authorization:
 
-        ListCounterResources: [GET,POST] http://localhost:7231/api/ListCounterResources
-
-        MasterReset: [GET,POST] http://localhost:7231/api/MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}
+In the local.settings.json file:
+    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value
+    "GetIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
