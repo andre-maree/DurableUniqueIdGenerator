@@ -45,7 +45,7 @@ namespace DurableUniqueIdGenerator
             if (authorizationHeader == null ||
                 authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
                 String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("GetIdsKey")))
+                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("GenerateIdsKey")))
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }

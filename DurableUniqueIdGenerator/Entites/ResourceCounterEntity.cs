@@ -10,7 +10,6 @@ namespace DurableUniqueIdGenerator.Entites
 {
     public static class ResourceCounterEntity
     {
-
         [Deterministic]
         [FunctionName("ResourceCounter")]
         public static void TableLockEntity([EntityTrigger] IDurableEntityContext ctx)
