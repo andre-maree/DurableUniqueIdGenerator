@@ -24,7 +24,7 @@ For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, 
 
 api/MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}
 
-{id} - this is the new value of the counter, this can be rest to 0 or any interger value, incuding negatives
+{id} - this is the new value of the counter, this can be rest to 0 or any interger value, including negatives
 
 ## DeleteCounterResource
 
