@@ -14,11 +14,12 @@ Authorization: GetIdsKey
 {waitForResultMilliseconds?} - optional, defaulkt to 1,5 seconds, how many milliseconds to wait for a result before a 202 accepted is returned
 
 For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, and the response will look like this:
-
+```json
 {
     "StartId": 11,
     "EndId": 20
 }
+```
 
 10 New ids, from 11 to 20, have been created for the resource "mycounter". The ids are garenteed to always be unique, that is if the couter was not reset or deleted.
 
