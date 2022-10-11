@@ -20,7 +20,7 @@ For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, 
     "EndId": 20
 }
 ```
-10 New ids, from 11 to 20, have been created for the resource "mycounter". The ids are garenteed to always be unique, that is if the couter was not reset or deleted.
+10 New ids, from 11 to 20, have been created for the resource "mycounter". The ids are guaranteed to always be unique, that is if the couter was not reset or deleted.
 
 Or else a 202 accepted could be returned with a durable function payload. In this case, use the status query url to check status and retrieve the result.
 
