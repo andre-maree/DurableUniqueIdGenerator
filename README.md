@@ -30,7 +30,7 @@ Or else a 202 accepted could be returned with a durable function payload. In thi
 
 Authorization: MasterKey
 
-{id} - this is the new value of the counter, this can be rest to 0 or any interger value, including negatives
+{id} - this is the new value of the counter, this can be set to 0 or any interger value, including negatives
 
 ## DeleteResourceCounter
 
