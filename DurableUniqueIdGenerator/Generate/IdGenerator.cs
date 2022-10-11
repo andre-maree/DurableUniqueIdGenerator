@@ -5,7 +5,6 @@ using DurableUniqueIdGenerator.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Newtonsoft.Json;
 
 namespace DurableUniqueIdGenerator
 {
@@ -17,14 +16,15 @@ namespace DurableUniqueIdGenerator
         {
             (string resourceId, int count) = context.GetInput<(string resourceId, int count)>();
 
-            // lock on the target table
+            // lock on the resource id string
             EntityId entityId = new("ResourceCounter", resourceId);
             int id = -1;
 
-            using (await context.LockAsync(entityId))
-            {
-                id = await context.CallEntityAsync<int>(entityId, "Get", count);
-            }
+            // lock is not needed because enities always execute sequencially
+            //using (await context.LockAsync(entityId))
+            //{
+            id = await context.CallEntityAsync<int>(entityId, "Get", count);
+            //}
 
             return new GenerateResult()
             {
@@ -50,7 +50,7 @@ namespace DurableUniqueIdGenerator
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            waitForResultMilliseconds = waitForResultMilliseconds.HasValue ? waitForResultMilliseconds.Value : 1500;
+            waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
 
             string instanceId = await starter.StartNewAsync("GenerateIdsOrchestration", null, (resourceId, count));
 

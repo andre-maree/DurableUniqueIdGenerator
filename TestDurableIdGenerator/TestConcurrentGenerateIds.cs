@@ -6,24 +6,27 @@ namespace TestDurableIdGenerator
     [TestClass]
     public class TestConcurrentGenerateIds
     {
+        /// <summary>
+        /// 10 Parallel requests of ranges of 10000 of new ids
+        /// </summary>
         [TestMethod]
         public async Task ConcurrentGenerateIdsTest()
         {
-            HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new();
 
             // reset mycounter to 0 with the MasterKey
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "ZQ1iwmLGiVGchDpu7koAvGV9n5jNxsKA");
+            httpClient.DefaultRequestHeaders.Authorization = new("Bearer", "ZQ1iwmLGiVGchDpu7koAvGV9n5jNxsKA");
 
             var resetRes = await httpClient.GetFromJsonAsync<int>("http://localhost:7231/api/masterreset/mycounter/0/50000");
 
             Assert.IsTrue(resetRes == 0);
 
             // now use the GenerateIdsKey to parallel request new ranges of ids
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "GzZEjv79DWcK2gVkTp3RKRoSDKJCdnwn");
+            httpClient.DefaultRequestHeaders.Authorization = new("Bearer", "GzZEjv79DWcK2gVkTp3RKRoSDKJCdnwn");
 
-            List<Task<Dictionary<string, int>>> tasks = new List<Task<Dictionary<string, int>>>();
+            List<Task<Dictionary<string, int>>> tasks = new();
 
-            // parallel requests of 10000 ranges of new ids, wait 50000 to avoid a 202 return
+            // 10 parallel requests of ranges of 10000 of new ids, wait 50000 to avoid a 202 return
             for (int i = 0; i < 10; i++)
             {
                 tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>("http://localhost:7231/api/GenerateIds/mycounter/10000/50000"));

@@ -27,7 +27,7 @@ namespace DurableUniqueIdGenerator
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            EntityQuery queryDefinition = new EntityQuery()
+            EntityQuery queryDefinition = new()
             {
                 PageSize = 99999999,
                 FetchState = true,

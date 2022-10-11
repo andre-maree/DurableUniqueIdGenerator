@@ -1,18 +1,13 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DurableUniqueIdGenerator.Entites
 {
-    public static class ResourceCounterEntity
+    public static class ResourceCounter
     {
         [Deterministic]
         [FunctionName("ResourceCounter")]
-        public static void TableLockEntity([EntityTrigger] IDurableEntityContext ctx)
+        public static void ResourceCounterEntity([EntityTrigger] IDurableEntityContext ctx)
         {
             switch (ctx.OperationName)
             {

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Newtonsoft.Json;
 
 namespace DurableUniqueIdGenerator
 {
@@ -27,7 +26,7 @@ namespace DurableUniqueIdGenerator
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            waitForResultMilliseconds = waitForResultMilliseconds.HasValue ? waitForResultMilliseconds.Value : 1500;
+            waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
 
             string instanceId = await starter.StartNewAsync("MasterResetOrchestration", null, (resourceId, id));
 
@@ -40,13 +39,14 @@ namespace DurableUniqueIdGenerator
         {
             (string resourceId, int id) = context.GetInput<(string resourceId, int id)>();
 
-            // lock on the target table
+            // lock on the resource id string
             EntityId entityId = new("ResourceCounter", resourceId);
 
-            using (await context.LockAsync(entityId))
-            {
+            // lock is not needed because enities always execute sequencially
+            //using (await context.LockAsync(entityId))
+            //{
                 await context.CallEntityAsync(entityId, "Reset", id);
-            }
+            //}
 
             return id;
         }
