@@ -46,7 +46,7 @@ Authorization: MasterKey
 Authorization: MasterKey and GetIdsKey
 
 Example response:
-
+```json
 [
    {
       "entityId":{
@@ -65,11 +65,13 @@ Example response:
       "state":30
    }
 ]
-
+```
 The "key" is the resource id and "state" is value of the current count of the resource.
 
 ## Authorization:
 
 In the local.settings.json file:
+
     "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value
+    
     "GetIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
