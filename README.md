@@ -73,7 +73,8 @@ The "key" is the resource id and "state" is the value of the current count of th
 
 In the local.settings.json file:
 
-    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value, and delete
+    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value,
+                                                 // and delete
     
     "GenerateIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
     
