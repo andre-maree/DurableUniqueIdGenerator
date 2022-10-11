@@ -10,29 +10,6 @@ namespace DurableUniqueIdGenerator
 {
     public static class IdGenerator
     {
-        [FunctionName("GenerateIdsOrchestration")]
-        public static async Task<GenerateResult> RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
-        {
-            (string resourceId, int count) = context.GetInput<(string resourceId, int count)>();
-
-            // lock on the resource id string
-            EntityId entityId = new("ResourceCounter", resourceId);
-            int id = -1;
-
-            // lock is not needed because enities always execute sequencially
-            //using (await context.LockAsync(entityId))
-            //{
-            id = await context.CallEntityAsync<int>(entityId, "Get", count);
-            //}
-
-            return new GenerateResult()
-            {
-                StartId = id - (count - 1),
-                EndId = id
-            };
-        }
-        
         [FunctionName("GenerateIds")]
         public static async Task<HttpResponseMessage> GenerateIds(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
@@ -55,6 +32,30 @@ namespace DurableUniqueIdGenerator
             string instanceId = await starter.StartNewAsync("GenerateIdsOrchestration", null, (resourceId, count));
 
             return await starter.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: TimeSpan.FromMilliseconds(waitForResultMilliseconds.Value));
+        }
+
+        [Deterministic]
+        [FunctionName("GenerateIdsOrchestration")]
+        public static async Task<GenerateResult> RunOrchestrator(
+            [OrchestrationTrigger] IDurableOrchestrationContext context)
+        {
+            (string resourceId, int count) = context.GetInput<(string resourceId, int count)>();
+
+            // lock on the resource id string
+            EntityId entityId = new("ResourceCounter", resourceId);
+            int id = -1;
+
+            // lock is not needed because enities always execute sequencially
+            //using (await context.LockAsync(entityId))
+            //{
+            id = await context.CallEntityAsync<int>(entityId, "Get", count);
+            //}
+
+            return new GenerateResult()
+            {
+                StartId = id - (count - 1),
+                EndId = id
+            };
         }
     }
 }

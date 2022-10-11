@@ -33,6 +33,7 @@ namespace DurableUniqueIdGenerator
             return await starter.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: TimeSpan.FromMilliseconds(waitForResultMilliseconds.Value));
         }
 
+        [Deterministic]
         [FunctionName("MasterResetOrchestration")]
         public static async Task<int> MasterReset(
             [OrchestrationTrigger] IDurableOrchestrationContext context)

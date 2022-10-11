@@ -9,6 +9,7 @@ namespace DurableUniqueIdGenerator
 {
     public static class DeleteResourceCounter
     {
+        [Deterministic]
         [FunctionName("DeleteResourceCounter")]
         public static async Task<HttpResponseMessage> DeleteResourceCounterClient(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "DeleteResourceCounter/{resourceId}")] HttpRequestMessage req,
@@ -28,6 +29,7 @@ namespace DurableUniqueIdGenerator
 
             EntityId entityId = new("ResourceCounter", resourceId);
 
+            // this is fire and forget, await completes when the request is logged and not when the actual delete happens
             await client.SignalEntityAsync(entityId, "Delete");
 
             return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
