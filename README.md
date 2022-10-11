@@ -73,10 +73,14 @@ The "key" is the resource id and "state" is value of the current count of the re
 
 In the local.settings.json file:
 
-    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value, and delete
+    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value, and delete
     
-    "GenerateIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
+    "GenerateIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
     
 The key must be passed in the auth header as a bearer token.
 
 It is recommended to also use function keys and the app system master key to add further security, and also to implement token based security using Azure AD.
+
+## Unit tests:
+
+Open the separate test solution TestIdGenerator.sln and run the unit tests. Make sure the DurableUniqueIdGenerator app is running before running the tests.
