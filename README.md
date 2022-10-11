@@ -11,7 +11,7 @@ Authorization: GetIdsKey
 
 {count} - how many ids to generate
 
-{waitForResultMilliseconds?} - optional, defaulkt to 1,5 seconds, how many milliseconds to wait for a result before a 202 accepted is returned
+{waitForResultMilliseconds?} - optional, default to 1,5 seconds, how many milliseconds to wait for a result before a 202 accepted is returned
 
 For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, and the response will look like this:
 ```json
