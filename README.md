@@ -1,11 +1,13 @@
 # DurableUniqueIdGenerator
 Generate new numeric ids in sequence for any resource id string. Integer ids will always be in sequence, and will always be unique.
 
+All api calls can use get or post.
+
 ## GenerateIds
 
 ### api/GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}
 
-Authorization: GetIdsKey
+Authorization: GenerateIdsKey
 
 {resourceId} - any string that identifies the resource
 
@@ -75,4 +77,6 @@ In the local.settings.json file:
 
     "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> set the counter to any value, and delete
     
-    "GetIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
+    "GenerateIdsKey": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" // used to authorize -> get new ids
+    
+The key must be passed in the auth header as a bearer token.
