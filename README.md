@@ -1,7 +1,7 @@
 # DurableUniqueIdGenerator
 Generate new numeric ids in sequence for any resource id string. Integer ids will always be in sequence, and will always be unique.
 
-All api calls can use get or post.
+All api calls can use http get or post.
 
 ## GenerateIds
 
