@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "DurableUniqueIdGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7231",
+      "launchBrowser": false
+    }
+  }
+}
