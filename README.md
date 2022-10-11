@@ -3,7 +3,7 @@ Generate new numeric ids in sequence for any resource id string. Integer ids wil
 
 ## GenerateIds
 
-api/GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}
+### api/GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}
 
 Authorization: GetIdsKey
 
@@ -24,7 +24,7 @@ For example, a call to http://localhost:7231/api/GenerateIds/mycounter/10/5000, 
 
 ## MasterReset
 
-api/MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}
+### api/MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}
 
 Authorization: MasterKey
 
@@ -32,7 +32,7 @@ Authorization: MasterKey
 
 ## DeleteCounterResource
 
-api/DeleteCounterResource/{resourceId}
+### api/DeleteCounterResource/{resourceId}
 
 Authorization: MasterKey
 
@@ -40,7 +40,7 @@ Authorization: MasterKey
 
 ## ListCounterResources
 
-api/ListCounterResources
+### api/ListCounterResources
 
 Authorization: MasterKey and GetIdsKey
 
