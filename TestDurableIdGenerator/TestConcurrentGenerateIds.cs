@@ -52,7 +52,7 @@ namespace TestDurableIdGenerator
                 var r1 = tasks.Single(r => r.Result["StartId"] == i);
 
                 // check the range end id
-                Assert.IsTrue(r1.Result["EndId"] == i + (range -1));
+                Assert.IsTrue(r1.Result["EndId"] == i + (range - 1));
                 
                 // set the next start id to look for
                 i += range;
