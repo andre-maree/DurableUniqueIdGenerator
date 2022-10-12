@@ -48,7 +48,7 @@ namespace TestDurableIdGenerator
                 // check the range end id
                 Assert.IsTrue(r1.Result["EndId"] == i + 9999);
                 
-                // set the next srtart id to look for
+                // set the next start id to look for
                 i += 10000;
             }
         }
