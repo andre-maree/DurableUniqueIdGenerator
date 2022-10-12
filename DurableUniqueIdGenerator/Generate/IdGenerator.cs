@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DurableUniqueIdGenerator.Helpers;
 using DurableUniqueIdGenerator.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -15,19 +16,13 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter, string resourceId, int count, int? waitForResultMilliseconds)
         {
-            System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
-
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("GenerateIdsKey")))
+            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+            if (!req.CheckGenerateIdsKey())
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
+            waitForResultMilliseconds.SetWaitForResult();
 
             string instanceId = await starter.StartNewAsync("GenerateIdsOrchestration", null, (resourceId, count));
 
@@ -43,12 +38,11 @@ namespace DurableUniqueIdGenerator
 
             // lock on the resource id string
             EntityId entityId = new("ResourceCounter", resourceId);
-            int id = -1;
 
             // lock is not needed because enities always execute sequencially
             //using (await context.LockAsync(entityId))
             //{
-            id = await context.CallEntityAsync<int>(entityId, "Get", count);
+            int id = await context.CallEntityAsync<int>(entityId, "Get", count);
             //}
 
             return new GenerateResult()

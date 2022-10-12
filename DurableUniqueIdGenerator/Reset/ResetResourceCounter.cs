@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DurableUniqueIdGenerator.Helpers;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -14,19 +15,13 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous,"get", "post", Route = "MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter, string resourceId, int id, int? waitForResultMilliseconds)
         {
-            System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
-
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+            if (!req.CheckMasterKey())
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
 
-            waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
+            waitForResultMilliseconds.SetWaitForResult();
 
             string instanceId = await starter.StartNewAsync("MasterResetOrchestration", null, (resourceId, id));
 

@@ -9,7 +9,6 @@ namespace DurableUniqueIdGenerator
 {
     public static class DeleteResourceCounter
     {
-        [Deterministic]
         [FunctionName("DeleteResourceCounter")]
         public static async Task<HttpResponseMessage> DeleteResourceCounterClient(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "DeleteResourceCounter/{resourceId}")] HttpRequestMessage req,
@@ -19,10 +18,7 @@ namespace DurableUniqueIdGenerator
 
             // Check that the Authorization header is present in the HTTP request and that it is in the
             // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+            if (!req.CheckMasterKey())
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }

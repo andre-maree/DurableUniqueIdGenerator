@@ -5,7 +5,6 @@ namespace DurableUniqueIdGenerator.Entites
 {
     public static class ResourceCounter
     {
-        [Deterministic]
         [FunctionName("ResourceCounter")]
         public static void ResourceCounterEntity([EntityTrigger] IDurableEntityContext ctx)
         {

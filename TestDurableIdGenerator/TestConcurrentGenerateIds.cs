@@ -5,6 +5,8 @@ namespace TestDurableIdGenerator
     [TestClass]
     public class TestConcurrentGenerateIds
     {
+        private const string baseUrl = "http://localhost:7231/";
+
         /// <summary>
         /// 10 Parallel requests of ranges of 10000 new ids
         /// </summary>
@@ -16,7 +18,7 @@ namespace TestDurableIdGenerator
             // reset mycounter to 0 with the MasterKey
             httpClient.DefaultRequestHeaders.Authorization = new("Bearer", "ZQ1iwmLGiVGchDpu7koAvGV9n5jNxsKA");
 
-            var resetRes = await httpClient.GetFromJsonAsync<int>("http://localhost:7231/api/masterreset/mycounter/0/50000");
+            var resetRes = await httpClient.GetFromJsonAsync<int>($"{baseUrl}api/masterreset/mycounter/0/50000");
 
             Assert.IsTrue(resetRes == 0);
 
@@ -25,10 +27,12 @@ namespace TestDurableIdGenerator
 
             List<Task<Dictionary<string, int>>> tasks = new();
 
+            int parallelCount = 10;
+
             // 10 parallel requests of ranges of 10000 new ids, wait 50000 to avoid a 202 return
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < parallelCount; i++)
             {
-                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>("http://localhost:7231/api/GenerateIds/mycounter/10000/50000"));
+                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>($"{baseUrl}api/GenerateIds/mycounter/10000/50000"));
             }
 
             int count = 0;
@@ -36,7 +40,7 @@ namespace TestDurableIdGenerator
             await Task.WhenAll(tasks);
 
             // now check every result`s range of new ids, all ids will be in the correct sequence with no duplicates or missing ids
-            for (int i = 1; count < 10; count++)
+            for (int i = 1; count < parallelCount; count++)
             {
                 var r1 = tasks.Single(r => r.Result["StartId"] == i);
 

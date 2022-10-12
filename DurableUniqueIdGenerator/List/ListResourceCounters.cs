@@ -15,14 +15,8 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "ListResourceCounters")] HttpRequestMessage req,
             [DurableClient] IDurableEntityClient client)
         {
-            System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
-
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                (!authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")) && !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("GenerateIdsKey"))))
+            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+            if (!req.CheckEitherGenerateIdsKeyOrMasterKey())
             {
                 return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
             }
