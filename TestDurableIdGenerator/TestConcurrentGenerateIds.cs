@@ -28,11 +28,12 @@ namespace TestDurableIdGenerator
             List<Task<Dictionary<string, int>>> tasks = new();
 
             int parallelCount = 10;
+            int range = 10000;
 
             // 10 parallel requests of ranges of 10000 new ids, wait 50000 to avoid a 202 return
             for (int i = 0; i < parallelCount; i++)
             {
-                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>($"{baseUrl}api/GenerateIds/mycounter/10000/50000"));
+                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>($"{baseUrl}api/GenerateIds/mycounter/{range}/50000"));
             }
 
             int count = 0;
@@ -46,10 +47,10 @@ namespace TestDurableIdGenerator
                 var r1 = tasks.Single(r => r.Result["StartId"] == i);
 
                 // check the range end id
-                Assert.IsTrue(r1.Result["EndId"] == i + 9999);
+                Assert.IsTrue(r1.Result["EndId"] == i + (range -1));
                 
                 // set the next start id to look for
-                i += 10000;
+                i += range;
             }
         }
     }
