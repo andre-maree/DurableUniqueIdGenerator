@@ -2,7 +2,7 @@
 Generate new numeric ids in sequence for any resource id string. Integer ids will always be in sequence, and will always be unique.
 
 - Avoid guids or strings as identifyers and increase the performance of your database.
-- When doing bulk inserts, an auto identity column makes it problematic to select the inserted data to get the new associated ids back.
+- When doing bulk inserts, an auto identity column makes it problematic to re-select the inserted data to get the new associated ids back.
 - Safely switch off the auto incrementing id of a database column and use the new generated ids. No need to re-work the code to change the id to be a guid.
 - DurableUniqueIdGenerator can be useful in any situation where an auto increment id is needed.
 
