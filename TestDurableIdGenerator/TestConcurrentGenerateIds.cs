@@ -15,10 +15,12 @@ namespace TestDurableIdGenerator
         {
             HttpClient httpClient = new();
 
+            string resourceId = "mycounter";
+
             // reset mycounter to 0 with the MasterKey
             httpClient.DefaultRequestHeaders.Authorization = new("Bearer", "ZQ1iwmLGiVGchDpu7koAvGV9n5jNxsKA");
 
-            var resetRes = await httpClient.GetFromJsonAsync<int>($"{baseUrl}api/masterreset/mycounter/0/50000");
+            var resetRes = await httpClient.GetFromJsonAsync<int>($"{baseUrl}api/masterreset/{resourceId}/ 0/50000");
 
             Assert.IsTrue(resetRes == 0);
 
@@ -33,7 +35,7 @@ namespace TestDurableIdGenerator
             // 10 parallel requests of ranges of 10000 new ids, wait 50000 to avoid a 202 return
             for (int i = 0; i < parallelCount; i++)
             {
-                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>($"{baseUrl}api/GenerateIds/mycounter/{range}/50000"));
+                tasks.Add(httpClient.GetFromJsonAsync<Dictionary<string, int>>($"{baseUrl}api/GenerateIds/{resourceId}/{range}/50000"));
             }
 
             int count = 0;
