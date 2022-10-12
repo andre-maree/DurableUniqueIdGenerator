@@ -69,7 +69,7 @@ Example response:
 ```
 The "key" is the resource id and "state" is the value of the current count of the resource.
 
-## Authorization:
+## Authentication:
 
 In the local.settings.json file:
 
