@@ -73,12 +73,12 @@ The "key" is the resource id and "state" is the value of the current count of th
 
 In the local.settings.json file:
 
-    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> MasterReset
-                                                 //                   -> DeleteResourceCounter
-                                                 //                   -> ListResourceCounters
+    "MasterKey": "xxxxxxxxxxxxxxxxxxx", // used to authorize -> MasterReset
+                                        //                   -> DeleteResourceCounter
+                                        //                   -> ListResourceCounters
     
-    "GenerateIdsKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" // used to authorize -> GenerateIds
-                                                    //                   -> ListResourceCounters
+    "GenerateIdsKey": "xxxxxxxxxxxxxxxxxxx" // used to authorize -> GenerateIds
+                                            //                   -> ListResourceCounters
     
 The key must be passed in the auth header as a bearer token.
 
