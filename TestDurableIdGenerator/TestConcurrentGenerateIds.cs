@@ -42,10 +42,13 @@ namespace TestDurableIdGenerator
             // now check every result`s range of new ids, all ids will be in the correct sequence with no duplicates or missing ids
             for (int i = 1; count < parallelCount; count++)
             {
+                // find the range start id
                 var r1 = tasks.Single(r => r.Result["StartId"] == i);
 
+                // check the range end id
                 Assert.IsTrue(r1.Result["EndId"] == i + 9999);
-
+                
+                // set the next srtart id to look for
                 i += 10000;
             }
         }
