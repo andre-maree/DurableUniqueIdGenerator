@@ -69,7 +69,7 @@ Example response:
 ```
 The "key" is the resource id and "state" is the value of the current count of the resource.
 
-## Authentication:
+## Token Based Security:
 
 In the local.settings.json file:
 
@@ -84,6 +84,6 @@ The key must be passed in the auth header as a bearer token.
 
 It is recommended to also use function keys and the app system master key to add further security, and also to implement token based security using Azure AD.
 
-## Unit tests:
+## Unit Tests:
 
 Open the separate test solution TestIdGenerator.sln and run the unit tests. Make sure the DurableUniqueIdGenerator app is running before running the tests.
