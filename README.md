@@ -3,7 +3,7 @@ Generate new numeric ids in sequence for any resource id string. Integer ids wil
 
 - Avoid guids or strings as identifyers and increase the performance of your database.
 - When doing bulk inserts, an auto identity column makes it problematic to re-select the inserted data to get the new associated ids back. Yes, the new ids can be retrieved by using a sql MERGE and temp table, but this is borderline bad practice - temp tables should be avoided.
-- Safely switch off the auto incrementing id of a database column and use the new generated ids. No need to re-work the code to change the id to be a guid.
+- If needed, switch off the auto incrementing id of a database column and use the new generated ids. No need to re-work the code to change the id to be of type guid or string. DurableUniqueIdGenerator will supply integers.
 - DurableUniqueIdGenerator can be useful in any situation where an auto increment integer id is needed.
 
 All api calls can use http get or post.
