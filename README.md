@@ -1,6 +1,11 @@
 # DurableUniqueIdGenerator
 Generate new numeric ids in sequence for any resource id string. Integer ids will always be in sequence, and will always be unique.
 
+- Avoid guids or strings as identifyers and increase the performance of your database.
+- When doing bulk inserts, an auto identity column makes it problematic to re-select the inserted data to get the new associated ids back. Yes, the new ids can be retrieved by using a sql MERGE and temp table, but this is borderline bad practice - temp tables should be avoided.
+- If needed, switch off the auto incrementing id of a database column and use the new generated ids. No need to re-work the code to change the id to be of type guid or string. DurableUniqueIdGenerator will supply integers.
+- DurableUniqueIdGenerator can be useful in any situation where an auto increment integer id is needed.
+
 All api calls can use http get or post.
 
 ## GenerateIds
@@ -69,21 +74,21 @@ Example response:
 ```
 The "key" is the resource id and "state" is the value of the current count of the resource.
 
-## Authorization:
+## Token Based Security:
 
 In the local.settings.json file:
 
-    "MasterKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx", // used to authorize -> MasterReset
-                                                 //                   -> DeleteResourceCounter
-                                                 //                   -> ListResourceCounters
+    "MasterKey": "xxxxxxxxxxxxxxxxxxx", // used to authorize -> MasterReset
+                                        //                   -> DeleteResourceCounter
+                                        //                   -> ListResourceCounters
     
-    "GenerateIdsKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx" // used to authorize -> GenerateIds
-                                                    //                   -> ListResourceCounters
+    "GenerateIdsKey": "xxxxxxxxxxxxxxxxxxx" // used to authorize -> GenerateIds
+                                            //                   -> ListResourceCounters
     
 The key must be passed in the auth header as a bearer token.
 
 It is recommended to also use function keys and the app system master key to add further security, and also to implement token based security using Azure AD.
 
-## Unit tests:
+## Unit Tests:
 
 Open the separate test solution TestIdGenerator.sln and run the unit tests. Make sure the DurableUniqueIdGenerator app is running before running the tests.
