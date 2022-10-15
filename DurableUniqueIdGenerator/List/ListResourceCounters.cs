@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -14,11 +15,13 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "ListResourceCounters")] HttpRequestMessage req,
             [DurableClient] IDurableEntityClient client)
         {
-            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
-            if (!req.CheckEitherGenerateIdsKeyOrMasterKey())
+            try
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-            }
+                // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+                if (!req.CheckEitherGenerateIdsKeyOrMasterKey())
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
 
                 EntityQuery queryDefinition = new()
                 {

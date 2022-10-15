@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -17,12 +18,12 @@ namespace DurableUniqueIdGenerator
             {
                 System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
 
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (!req.CheckMasterKey())
-            {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-            }
+                // Check that the Authorization header is present in the HTTP request and that it is in the
+                // format of "Authorization: Bearer <token>"
+                if (!req.CheckMasterKey())
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
 
                 EntityId entityId = new("ResourceCounter", resourceId);
 
@@ -31,7 +32,7 @@ namespace DurableUniqueIdGenerator
 
                 return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // TODO: log error to table storage
                 Console.WriteLine(ex.ToString());

@@ -16,13 +16,15 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "GenerateIds/{resourceId}/{count}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter, string resourceId, int count, int? waitForResultMilliseconds)
         {
-            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
-            if (!req.CheckGenerateIdsKey())
+            try
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-            }
+                // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+                if (!req.CheckGenerateIdsKey())
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
 
-            waitForResultMilliseconds.SetWaitForResult();
+                waitForResultMilliseconds.SetWaitForResult();
 
                 string instanceId = await starter.StartNewAsync("GenerateIdsOrchestration", null, (resourceId, count));
 
@@ -45,7 +47,7 @@ namespace DurableUniqueIdGenerator
             (string resourceId, int count) = context.GetInput<(string resourceId, int count)>();
 
             EntityId entityId = new("ResourceCounter", resourceId);
-            
+
             // a lock is not needed because enities always execute sequencially
             int id = await context.CallEntityAsync<int>(entityId, "Get", count);
 

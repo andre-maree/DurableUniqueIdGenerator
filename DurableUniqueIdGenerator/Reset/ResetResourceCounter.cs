@@ -15,13 +15,15 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter, string resourceId, int id, int? waitForResultMilliseconds)
         {
-            // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
-            if (!req.CheckMasterKey())
+            try
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
-            }
+                // Check that the Authorization header is present in the HTTP request and that it is in the format of "Authorization: Bearer <token>"
+                if (!req.CheckMasterKey())
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
 
-            waitForResultMilliseconds.SetWaitForResult();
+                waitForResultMilliseconds.SetWaitForResult();
 
                 string instanceId = await starter.StartNewAsync("MasterResetOrchestration", null, (resourceId, id));
 
