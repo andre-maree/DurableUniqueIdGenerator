@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs;
+using System;
 
 namespace DurableUniqueIdGenerator.Entites
 {
@@ -13,10 +14,14 @@ namespace DurableUniqueIdGenerator.Entites
             {
                 case "Get":
 
-                    int newId = ctx.GetState<int>() + ctx.GetInput<int>();
+                    int count = ctx.GetInput<int>();
+                    int endId = ctx.GetState<int>() + count;
 
-                    ctx.SetState(newId);
-                    ctx.Return(newId);
+                    ctx.SetState(endId);
+                    ctx.Return(endId);
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"New id range generated: [{endId - (count - 1)} - {endId}]");
 
                     break;
 

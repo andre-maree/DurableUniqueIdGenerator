@@ -15,24 +15,34 @@ namespace DurableUniqueIdGenerator
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "DeleteResourceCounter/{resourceId}")] HttpRequestMessage req,
             [DurableClient] IDurableEntityClient client, string resourceId)
         {
-            System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
-
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+            try
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
+
+                // Check that the Authorization header is present in the HTTP request and that it is in the
+                // format of "Authorization: Bearer <token>"
+                if (authorizationHeader == null ||
+                    authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
+                    String.IsNullOrEmpty(authorizationHeader.Parameter) ||
+                    !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
+
+                EntityId entityId = new("ResourceCounter", resourceId);
+
+                // this is fire and forget, await completes when the request is logged and not when the actual delete happens
+                await client.SignalEntityAsync(entityId, "Delete");
+
+                return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            }
+            catch(Exception ex)
+            {
+                // TODO: log error to table storage
+                Console.WriteLine(ex.ToString());
             }
 
-            EntityId entityId = new("ResourceCounter", resourceId);
-
-            // this is fire and forget, await completes when the request is logged and not when the actual delete happens
-            await client.SignalEntityAsync(entityId, "Delete");
-
-            return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
         }
     }
 }

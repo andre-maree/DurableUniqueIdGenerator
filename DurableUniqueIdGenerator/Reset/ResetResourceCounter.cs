@@ -11,26 +11,36 @@ namespace DurableUniqueIdGenerator
     {
         [FunctionName("MasterReset")]
         public static async Task<HttpResponseMessage> HttpStart(
-            [HttpTrigger(AuthorizationLevel.Anonymous,"get", "post", Route = "MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "MasterReset/{resourceId}/{id}/{waitForResultMilliseconds?}")] HttpRequestMessage req,
             [DurableClient] IDurableOrchestrationClient starter, string resourceId, int id, int? waitForResultMilliseconds)
         {
-            System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
-
-            // Check that the Authorization header is present in the HTTP request and that it is in the
-            // format of "Authorization: Bearer <token>"
-            if (authorizationHeader == null ||
-                authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
-                String.IsNullOrEmpty(authorizationHeader.Parameter) ||
-                !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+            try
             {
-                return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                System.Net.Http.Headers.AuthenticationHeaderValue authorizationHeader = req.Headers.Authorization;
+
+                // Check that the Authorization header is present in the HTTP request and that it is in the
+                // format of "Authorization: Bearer <token>"
+                if (authorizationHeader == null ||
+                    authorizationHeader.Scheme.CompareTo("Bearer") != 0 ||
+                    String.IsNullOrEmpty(authorizationHeader.Parameter) ||
+                    !authorizationHeader.Parameter.Equals(Environment.GetEnvironmentVariable("MasterKey")))
+                {
+                    return new HttpResponseMessage(System.Net.HttpStatusCode.Unauthorized);
+                }
+
+                waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
+
+                string instanceId = await starter.StartNewAsync("MasterResetOrchestration", null, (resourceId, id));
+
+                return await starter.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: TimeSpan.FromMilliseconds(waitForResultMilliseconds.Value));
+            }
+            catch (Exception ex)
+            {
+                // TODO: log error to table storage
+                Console.WriteLine(ex.ToString());
             }
 
-            waitForResultMilliseconds = waitForResultMilliseconds ?? 1500;
-
-            string instanceId = await starter.StartNewAsync("MasterResetOrchestration", null, (resourceId, id));
-
-            return await starter.WaitForCompletionOrCreateCheckStatusResponseAsync(req, instanceId, timeout: TimeSpan.FromMilliseconds(waitForResultMilliseconds.Value));
+            return new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
         }
 
         [Deterministic]
@@ -40,14 +50,10 @@ namespace DurableUniqueIdGenerator
         {
             (string resourceId, int id) = context.GetInput<(string resourceId, int id)>();
 
-            // lock on the resource id string
             EntityId entityId = new("ResourceCounter", resourceId);
 
-            // lock is not needed because enities always execute sequencially
-            //using (await context.LockAsync(entityId))
-            //{
-                await context.CallEntityAsync(entityId, "Reset", id);
-            //}
+            // a lock is not needed because enities always execute sequencially
+            await context.CallEntityAsync(entityId, "Reset", id);
 
             return id;
         }
